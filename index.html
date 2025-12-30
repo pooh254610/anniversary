@@ -240,7 +240,7 @@ video{
 <!-- LOCK -->
 <div id="lock">
   <div class="lock-box">
-    <img src="img/lock.jpeg" class="lock-img">
+    <img src="lock.jpeg" class="lock-img">
     <h3>ใส่รวันครบรอบ 💖</h3>
     ใส่ใหัถูกนะอ้วนๆ
     <div class="pin" id="pin"></div>
@@ -290,9 +290,17 @@ video{
   <button class="btn" id="submitQuiz">ส่งคำตอบ</button>
 </div>
 
-<!-- VIDEO -->
-<div id="videoScreen" class="hidden">
-  <video id="memoryVideo" src="img/video/memory3.mp4" playsinline></video>
+<div id="videoScreen">
+  <iframe
+    id="memoryVideo"
+    width="100%"
+    height="360"
+    src="https://www.youtube.com/embed/dEaRsgGyHMo?autoplay=1&mute=1&playsinline=1"
+    frameborder="0"
+    allow="autoplay; encrypted-media; picture-in-picture"
+    allowfullscreen>
+  </iframe>
+  <button class="btn" id="videoNext">ไปต่อ 💖</button>
 </div>
 
 <!-- CONTENT -->
@@ -330,8 +338,6 @@ Happy New Year นะอ้วน 🎆
 แต่เค้าก็ยังรักอ้วนเหมือนเดิมทุกวันนะ
 ไม่เคยน้อยลงเลยแม้แต่นิดเดียวเลย
 </p>
-
-    </p>
   </div>
 
   <div class="card">
@@ -342,12 +348,12 @@ Happy New Year นะอ้วน 🎆
       <div class="time-box"><span id="m">0</span>นาที</div>
       <div class="time-box"><span id="s">0</span>วิ</div>
     </div>
-    <video src="img/video/memory1.mp4" autoplay muted loop playsinline></video>
-    <video src="img/video/memory2.mp4" autoplay muted loop playsinline></video>
+    <video src="video/memory1.mp4" autoplay muted loop playsinline></video>
+    <video src="video/memory2.mp4" autoplay muted loop playsinline></video>
   </div>
 </div>
 
-<audio id="bgm" src="img/music/bgm.mp3" loop></audio>
+<audio id="bgm" src="music/bgm.mp3" loop></audio>
 </div>
 
 <button id="musicToggle" class="music-btn">🎵</button>
@@ -364,7 +370,7 @@ setInterval(()=>{
 
 const PIN="301124";
 const START="2024-11-30";
-const PUZZLE_IMAGE="img/puzzle.jpeg";
+const PUZZLE_IMAGE="puzzle.jpeg";
 
 const lock=document.getElementById("lock");
 const letter=document.getElementById("letter");
@@ -472,8 +478,27 @@ document.getElementById("submitQuiz").onclick=()=>{
   if(pass){
     quiz.classList.add("hidden");
     videoPage.classList.remove("hidden");
-    memoryVideo.play();
   }
+};
+
+/* ปุ่มไปต่อ (เพิ่มใหม่ แต่ไม่ลบ onended เดิม) */
+document.getElementById("videoNext").onclick=()=>{
+  videoPage.classList.add("hidden");
+  content.classList.remove("hidden");
+  bgm.play();
+  heartFireworkTimer=setInterval(launchHeartFirework,600);
+  setInterval(launchFirework,900);
+  typeByWord(document.getElementById("loveText"),300);
+  const start=new Date(START).getTime();
+  setInterval(()=>{
+    let diff=Date.now()-start;
+    d.innerText=Math.floor(diff/86400000);
+    diff%=86400000;
+    h.innerText=Math.floor(diff/3600000);
+    diff%=3600000;
+    m.innerText=Math.floor(diff/60000);
+    s.innerText=Math.floor((diff%60000)/1000);
+  },1000);
 };
 
 function launchFirework(){
@@ -495,6 +520,7 @@ function launchHeartFirework(){
   setTimeout(()=>heartEl.remove(),4500);
 }
 
+/* onended เดิม (คงไว้ แม้ YouTube จะไม่ยิง event) */
 memoryVideo.onended=()=>{
   videoPage.classList.add("hidden");
   content.classList.remove("hidden");
